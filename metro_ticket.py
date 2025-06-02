@@ -17,13 +17,14 @@ station  = {
     12: "Karwan Bazar",
     13: "Motijheel"}
 
-def save_data(name,number,current_location,destination,total_cost):
+def save_data(name,number,current_location,destination,total_cost,total_ticket):
     user_data= { # saving user data in a set 
         "name":name,
         "number":number,
         "current_location":station[current_location],
         "destination":station[destination],
-        "total_cost": total_cost
+        "total_cost": total_cost,
+        "total_ticket":total_ticket
     }
     # convert set into pandas csv file 
     df=pd.DataFrame([user_data])
@@ -46,7 +47,7 @@ def qrcode():
     code.make(fit=True)
     image= qr.make()
     image.show()
-    
+
 
 def single_ticket():
     print("fill the form here : ")
@@ -57,21 +58,37 @@ def single_ticket():
     current_location = int(input("From (enter the  current station number) : "))
     destination = int(input("To (enter the station number) : "))
     cost_per_station = 20 
+    if selection == 1: 
+        total_ticket=1
+    else: 
+        total_ticket=n
     if destination in station and current_location in station:
         ttal_distance = abs(current_location-destination)
     else: 
         print("wrong destination")
-    total_cost = ttal_distance*cost_per_station
-    print(total_cost)
-    save_data(name,number,current_location,destination,total_cost)
+    total_cost = ttal_distance*cost_per_station*total_ticket
+    if selection==1:
+        print(f"you have to pay {total_cost} taka")
+    save_data(name,number,current_location,destination,total_cost,total_ticket)
     qrcode()
 
+
+def multi_ticket(n):
+    for _ in range(1,n+1):
+        single_ticket()
+    print(f"you have to pay {total_cost} taka")
+
+    
 
 print("welcome to metro ticket service")
 print("select your option : \n 1.single ticket \n 2.multiple tickets")
 selection = int(input("your choise in number: "))
 if selection == 1: 
     single_ticket()
+elif selection == 2: 
+    n=int(input("how many ticket do you want: "))
+    multi_ticket(n)
+
 
 
 
