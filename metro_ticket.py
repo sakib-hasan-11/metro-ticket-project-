@@ -49,10 +49,10 @@ def qrcode():
     image.show()
 
 
-def single_ticket():
+def single_ticket(silent=False):
     print("fill the form here : ")
     for key,value in station.items(): 
-        print(f"{key}: { value}")
+        print(f"{key}: {value}")
     name= input("Enter your name: ")
     number = int(input("enter your number: "))
     current_location = int(input("From (enter the  current station number) : "))
@@ -63,20 +63,36 @@ def single_ticket():
     else: 
         total_ticket=n
     if destination in station and current_location in station:
-        ttal_distance = abs(current_location-destination)
+        total_distance = abs(current_location-destination)
     else: 
         print("wrong destination")
-    total_cost = ttal_distance*cost_per_station*total_ticket
-    if selection==1:
+        return None
+    total_cost = total_distance*cost_per_station
+    if not silent:
         print(f"you have to pay {total_cost} taka")
+        qrcode()
     save_data(name,number,current_location,destination,total_cost,total_ticket)
-    qrcode()
+    ticket_info={
+        "name":name,
+        "number":number,
+        "current_location":current_location,
+        "destination":destination,
+        "total_cost":total_cost,
+        "total_ticket":total_ticket
+    }
+    return ticket_info
+
+
 
 
 def multi_ticket(n):
-    for _ in range(1,n+1):
-        single_ticket()
-    print(f"you have to pay {total_cost} taka")
+    multi_amount=0
+    all_ticket=[]
+    for i in range(1,n+1):
+        print(f"person {i} :")
+        ticket=single_ticket(silent=True)
+        multi_amount+= ticket["total_cost"]
+        print(f"\nTotal cost for {n} tickets: {multi_amount} Taka.")
 
     
 
@@ -88,7 +104,6 @@ if selection == 1:
 elif selection == 2: 
     n=int(input("how many ticket do you want: "))
     multi_ticket(n)
-
 
 
 
