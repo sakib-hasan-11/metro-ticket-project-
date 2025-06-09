@@ -1,6 +1,8 @@
 import qrcode as qr
 import pandas as pd 
 import os
+from datetime import datetime
+import random
 
 station  = {
     1: "Uttara North",
@@ -15,17 +17,21 @@ station  = {
     10: "Bijoy Sarani",
     11: "Farmgate",
     12: "Karwan Bazar",
-    13: "Motijheel"}
-
-def save_data(name,number,current_location,destination,total_cost,total_ticket):
-    user_data= { # saving user data in a set 
-        "name":name,
-        "number":number,
-        "current_location":station[current_location],
-        "destination":station[destination],
-        "total_cost": total_cost,
-        "total_ticket":total_ticket
+    13: "Motijheel"
     }
+
+
+
+
+
+
+
+
+
+
+
+
+def save_data(user_data):
     # convert set into pandas csv file 
     df=pd.DataFrame([user_data])
     # giving a file name to save in laptop 
@@ -36,32 +42,41 @@ def save_data(name,number,current_location,destination,total_cost,total_ticket):
     else: 
         df.to_csv(file_name,mode="w",index=False,header=True)
 
-
-def qrcode(): 
+def qrcode(data): 
     code= qr.QRCode(
         version= 1,
         box_size=5,
         border=1,
     )
-    code.add_data("thanks to be with us")
+    code.add_data(data)
     code.make(fit=True)
     image= qr.make()
     image.show()
 
-
 def single_ticket(silent=False):
+    # printing stations 
     print("fill the form here : ")
     for key,value in station.items(): 
         print(f"{key}: {value}")
+
+
+    # taking user input 
     name= input("Enter your name: ")
     number = int(input("enter your number: "))
     current_location = int(input("From (enter the  current station number) : "))
     destination = int(input("To (enter the station number) : "))
-    cost_per_station = 20 
+    ticket_id =genarate_ticket_id()
+
+
+    # counting total tickets 
     if selection == 1: 
         total_ticket=1
     else: 
         total_ticket=n
+
+
+    # counting total amount
+    cost_per_station=20
     if destination in station and current_location in station:
         total_distance = abs(current_location-destination)
     else: 
@@ -70,20 +85,24 @@ def single_ticket(silent=False):
     total_cost = total_distance*cost_per_station
     if not silent:
         print(f"you have to pay {total_cost} taka")
-        qrcode()
-    save_data(name,number,current_location,destination,total_cost,total_ticket)
-    ticket_info={
-        "name":name,
-        "number":number,
-        "current_location":current_location,
-        "destination":destination,
-        "total_cost":total_cost,
-        "total_ticket":total_ticket
+
+        # makieing qr code
+        qrcode_data = f"Ticket ID: {ticket_id}\nName: {name}\nFrom: {station[current_location]} To: {station[destination]}\nTotal Cost: {total_cost} BDT"
+        qrcode(data=qrcode_data)
+
+    #csv data 
+    userdata = {
+    "ticket_id": ticket_id,
+    "name": name,
+    "number": number,
+    "current_location": station[current_location],
+    "destination": station[destination],
+    "total_cost": total_cost,
+    "total_ticket": total_ticket,
+
     }
-    return ticket_info
 
-
-
+    save_data(user_data=userdata)
 
 def multi_ticket(n):
     multi_amount=0
@@ -94,7 +113,12 @@ def multi_ticket(n):
         multi_amount+= ticket["total_cost"]
         print(f"\nTotal cost for {n} tickets: {multi_amount} Taka.")
 
-    
+def genarate_ticket_id(): 
+    now = datetime.now()
+    date_str = now.strftime("%y%m%d%H%M%S")  
+    random_int = random.randint(10,99)
+    return f"MT{date_str}_{random_int}"
+
 
 print("welcome to metro ticket service")
 print("select your option : \n 1.single ticket \n 2.multiple tickets")
