@@ -42,6 +42,20 @@ def save_data(user_data):
     else: 
         df.to_csv(file_name,mode="w",index=False,header=True)
 
+
+def cancel_ticket():
+    df=pd.read_csv("metro_ticket_data.csv") # read the file to access data 
+    tcketID=input("enter your ticket id here : ")
+    if tcketID in df["ticket_id"].values:
+        cost=df.loc[df["ticket_id"]==tcketID, "total_cost"].values[0] # access to the total cost cell using ticket id
+        df.loc[df["ticket_id"]==tcketID,["cancel_ticket","total_cost"]] = [True,cost*.2] # updating the data 
+        df.to_csv("metro_ticket_data.csv",index=False) # saving update to the main file 
+        print("your ticket is canceled and 80% taka is refunded through the gateway used .")
+    else: 
+        print("ticket id not found in the data set ")
+
+
+
 def qrcode(data): 
     code= qr.QRCode(
         version= 1,
@@ -99,10 +113,12 @@ def single_ticket(silent=False):
     "destination": station[destination],
     "total_cost": total_cost,
     "total_ticket": total_ticket,
+    "canceled ticket": False
 
     }
 
     save_data(user_data=userdata)
+    return userdata
 
 def multi_ticket(n):
     multi_amount=0
@@ -110,7 +126,7 @@ def multi_ticket(n):
     for i in range(1,n+1):
         print(f"person {i} :")
         ticket=single_ticket(silent=True)
-        multi_amount+= ticket["total_cost"]
+        multi_amount += ticket["total_cost"]
         print(f"\nTotal cost for {n} tickets: {multi_amount} Taka.")
 
 def genarate_ticket_id(): 
@@ -120,16 +136,17 @@ def genarate_ticket_id():
     return f"MT{date_str}_{random_int}"
 
 
+
 print("welcome to metro ticket service")
-print("select your option : \n 1.single ticket \n 2.multiple tickets")
+print("select your option : \n 1.single ticket \n 2.multiple tickets \n 3.cancel ticket")
 selection = int(input("your choise in number: "))
 if selection == 1: 
     single_ticket()
 elif selection == 2: 
     n=int(input("how many ticket do you want: "))
     multi_ticket(n)
-
-
+elif selection == 3: 
+    cancel_ticket()
 
 
 
