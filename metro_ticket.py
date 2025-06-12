@@ -42,7 +42,6 @@ def save_data(user_data):
     else: 
         df.to_csv(file_name,mode="w",index=False,header=True)
 
-
 def cancel_ticket():
     df=pd.read_csv("metro_ticket_data.csv") # read the file to access data 
     tcketID=input("enter your ticket id here : ")
@@ -53,8 +52,6 @@ def cancel_ticket():
         print("your ticket is canceled and 80% taka is refunded through the gateway used .")
     else: 
         print("ticket id not found in the data set ")
-
-
 
 def qrcode(data): 
     code= qr.QRCode(
