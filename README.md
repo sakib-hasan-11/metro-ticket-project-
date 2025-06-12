@@ -4,7 +4,7 @@ METRO TICKETING SYSTEM – PYTHON PROJECT
 
 ---
 
-In many cities, buying metro tickets is still a manual process. This causes long queues, wasted time, and mistakes.
+In Bangladesh, buying metro tickets is still a manual process. This causes long queues, wasted time, and mistakes.
 To solve this, I created a simple Python-based Metro Ticketing System that helps users:
 
 • Buy single or multiple metro tickets easily  
